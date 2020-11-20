@@ -1,0 +1,25 @@
+@page "/Notifications"
+
+<h3>Notifications</h3>
+
+<button class="btn btn-success" @onclick = "ShowNotification">Show Notification</button>
+
+@code
+{
+void ShowNotification()
+{
+    var icon = $"{System.IO.Directory.GetCurrentDirectory()}/wwwroot/favicon.ico";
+    var options = new NotificationOptions("Hi from Blazor & Electron", "This is a notification from Desktop app with Blazor")
+    {
+       Icon = icon,
+       OnClick = async () => { await Electron.Dialog.ShowMessageBoxAsync(new MessageBoxOptions("The notification has been clicked")
+       {
+        Icon = icon,
+        Title = "Customized Message Box"
+       } );
+        }    
+    };
+    Electron.Notification.Show(options);
+}
+
+}

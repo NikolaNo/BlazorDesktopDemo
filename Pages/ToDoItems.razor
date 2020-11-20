@@ -1,0 +1,80 @@
+@page "/ToDoItems"
+@using BlazorDesktopDemo.Models;
+@inject BlazorDesktopDemo.Data.ApplicationDbContext db;
+
+<h2>ToDo Items</h2>
+<p><input @bind=@Descriptions type="text">
+<button class="btn btn-success" @onclick="AddFixedItem" style="margin-left:10px">Add Item</button></p>
+<p>Comment: <input @bind=@comments type="text"></p>
+<table class="table table-bordered">
+<thead>
+    <th>
+        <td>
+            Descriptions
+        </td> 
+                <td>
+            Comment
+        </td> 
+        <td></td>
+    </th>
+</thead>
+<tbody>
+@foreach (var item in items)
+{ 
+     <tr>
+        <td>
+            @item.finishedDate
+        </td>
+        <td>
+            @item.Description
+        </td>
+                <td>
+            @item.Comment
+        </td>
+        <td>
+            <button class="btn btn-success" @onclick="@(() => SetAsDone(item.id))">Done</button>
+        </td>
+    </tr>     
+}
+</tbody>
+</table>
+
+@code
+{
+    List<ToDoItem> items = new List<ToDoItem>();        
+    string Descriptions ="";
+    string comments = "";
+    protected override void OnInitialized()
+    {
+        items = db.Items.Where(x=>x.IsDone == false).ToList();
+    }
+    public void SetAsDone(string id)
+    {
+     var itemCh = db.Items.Where(x=>x.id == id).SingleOrDefault();
+        itemCh.IsDone = true;
+        itemCh.Comment = comments;
+        db.SaveChanges();   
+        Descriptions = "";
+        comments = ""; 
+        StateHasChanged(); 
+    }
+    void AddFixedItem()
+    {
+        var item = new ToDoItem
+        {
+            id = Guid.NewGuid().ToString(),
+            Description = Descriptions,
+            IsDone = false,
+            Comment = comments,
+            finishedDate = DateTime.Now
+        };
+        items.Add(item);
+        db.Items.Add(item);
+        db.SaveChanges();
+        Descriptions = "";
+        comments = "";
+        StateHasChanged();
+    }
+}
+
+     

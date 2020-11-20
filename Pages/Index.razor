@@ -1,0 +1,33 @@
+﻿@page "/"
+<head>
+    <style>
+        h1 {
+            color:blue;
+        }
+    </style>
+</head>
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+<SurveyPrompt Title="How is Blazor working for you?" />
+
+<button class="btn btn-success" @onclick="OpenAboutWindow">Open Button Window</button>
+
+@code{
+
+async Task OpenAboutWindow()
+{
+    string url = $"http://localhost:{BridgeSettings.WebPort}/About";
+
+    var options = new BrowserWindowOptions
+    {
+        @* Fullscreen = true, *@
+        @* AlwaysOnTop = true, *@
+
+    };
+    var mainwindow = Electron.WindowManager.BrowserWindows.First();
+
+    var window = await Electron.WindowManager.CreateWindowAsync(options, url);
+}
+}
