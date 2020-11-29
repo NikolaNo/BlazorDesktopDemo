@@ -1,11 +1,14 @@
 @page "/ToDoItems"
 @using BlazorDesktopDemo.Models;
 @inject BlazorDesktopDemo.Data.ApplicationDbContext db;
-
+@* @inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper *@
 <h2>ToDo Items</h2>
+<NavLink class="nav-link btn btn-primary" href="compleatedtasks" style="width:25%;" >
+    Completed Items</NavLink>
+<hr>
 <p><input @bind=@Descriptions type="text">
 <button class="btn btn-success" @onclick="AddFixedItem" style="margin-left:10px">Add Item</button></p>
-<p>Comment: <input @bind=@comments type="text"></p>
+@* <p>Add Comment: <input @bind=@comments type="text"></p> *@
 <table class="table table-bordered">
 <thead>
     <th>
@@ -29,10 +32,10 @@
             @item.Description
         </td>
                 <td>
-            @item.Comment
+            <p><input @bind=@comments type="text" ></p>
         </td>
         <td>
-            <button class="btn btn-success" @onclick="@(() => SetAsDone(item.id))">Done</button>
+            <button class="btn btn-primary"  @onclick="@(() => SetAsDone(item.id))">Done</button>
         </td>
     </tr>     
 }
@@ -48,15 +51,18 @@
     {
         items = db.Items.Where(x=>x.IsDone == false).ToList();
     }
-    public void SetAsDone(string id)
+    public async Task SetAsDone(string id)
     {
+     
      var itemCh = db.Items.Where(x=>x.id == id).SingleOrDefault();
         itemCh.IsDone = true;
         itemCh.Comment = comments;
-        db.SaveChanges();   
+        await db.SaveChangesAsync();   
         Descriptions = "";
         comments = ""; 
         StateHasChanged(); 
+        OnInitialized();      
+       
     }
     void AddFixedItem()
     {

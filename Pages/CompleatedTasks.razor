@@ -3,6 +3,8 @@
 @inject BlazorDesktopDemo.Data.ApplicationDbContext db;
 
 <h2><ul>Completed Tasks</ul></h2>
+<NavLink class="nav-link btn btn-primary" href="todoitems" style="width:25%">To Do Items</NavLink>
+<hr>
 <input type="date" @bind=@date>
 <button class="btn btn-primary" @onclick=@Refresh>></button>
 <table class="table table-bordered">

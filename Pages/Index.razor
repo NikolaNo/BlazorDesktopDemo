@@ -6,13 +6,11 @@
         }
     </style>
 </head>
-<h1>Hello, world!</h1>
+<NavLink class="nav-link btn btn-primary" href="todoitems">To Do Items</NavLink>
+<hr>
+<NavLink class="nav-link btn btn-primary" href="compleatedtasks">Completed Items</NavLink>
 
-Welcome to your new app.
-
-<SurveyPrompt Title="How is Blazor working for you?" />
-
-<button class="btn btn-success" @onclick="OpenAboutWindow">Open Button Window</button>
+@* <button class="btn btn-success" @onclick="OpenAboutWindow">Open Button Window</button> *@
 
 @code{
 
@@ -30,4 +28,20 @@ async Task OpenAboutWindow()
 
     var window = await Electron.WindowManager.CreateWindowAsync(options, url);
 }
+async Task OpenTasks()
+{
+    string url =$"http://localhost:{BridgeSettings.WebPort}/ToDoItems";
+        var mainwindow = Electron.WindowManager.BrowserWindows.First();
+            var options = new BrowserWindowOptions
+    {
+        @* Fullscreen = true, *@
+        @* AlwaysOnTop = true, *@
+
+    };
+
+    var window = await Electron.WindowManager.CreateWindowAsync(options, url);
+
+}
+
+
 }
