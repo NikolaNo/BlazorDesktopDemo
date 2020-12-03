@@ -13,6 +13,7 @@ using BlazorDesktopDemo.Data;
 using ElectronNET.API;
 using ElectronNET.API.Entities;
 using Microsoft.EntityFrameworkCore;
+using Toolbelt.Blazor.Extensions.DependencyInjection;
 
 namespace BlazorDesktopDemo
 {
@@ -33,9 +34,9 @@ namespace BlazorDesktopDemo
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlite("Data source = ToDoItems.db");
-            });         
-            
+            });
 
+            services.AddHeadElementHelper();
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
@@ -65,15 +66,23 @@ namespace BlazorDesktopDemo
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
             });
-            if(HybridSupport.IsElectronActive)
-            {
-            ElcatronBootstrap();
-            }
+            Task.Run(async () => await Electron.WindowManager.CreateWindowAsync());
+            // if(HybridSupport.IsElectronActive)
+            // {
+            // ElcatronBootstrap();
+            // }
         }
         void ElcatronBootstrap()
         {
-            Task.Run(async () => await Electron.WindowManager.CreateWindowAsync());
+            Task.Run(async () => await Electron.WindowManager.CreateWindowAsync(
+                new BrowserWindowOptions
+                {
+                    Width = 800,
+                    Height = 640,                   
 
+                }
+                ));
+            
             var menu = new MenuItem[]
             {
                 new MenuItem
@@ -121,6 +130,13 @@ namespace BlazorDesktopDemo
                 
             };
             Electron.Menu.SetApplicationMenu(menu);
+            //Electron.WindowManager.CreateWindowAsync(new BrowserWindowOptions
+            //{
+            //    Width = 1152,
+            //    Height = 940,
+            //    Show = false
+            //}); 
+            
         }
     }
 }

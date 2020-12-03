@@ -5,12 +5,14 @@
             color:blue;
         }
     </style>
+    
 </head>
+<title>Title</title>
 <NavLink class="nav-link btn btn-primary" href="todoitems">To Do Items</NavLink>
 <hr>
 <NavLink class="nav-link btn btn-primary" href="compleatedtasks">Completed Items</NavLink>
-
-@* <button class="btn btn-success" @onclick="OpenAboutWindow">Open Button Window</button> *@
+<hr />
+ <button class="btn btn-success" @onclick="OpenAboutWindow">Open Button Window</button> 
 
 @code{
 
@@ -20,6 +22,7 @@ async Task OpenAboutWindow()
 
     var options = new BrowserWindowOptions
     {
+        
         @* Fullscreen = true, *@
         @* AlwaysOnTop = true, *@
 

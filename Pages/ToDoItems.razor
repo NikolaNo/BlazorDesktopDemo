@@ -19,6 +19,7 @@
             Comment
         </td> 
         <td></td>
+        <td></td>
     </th>
 </thead>
 <tbody>
@@ -37,6 +38,9 @@
         <td>
             <button class="btn btn-primary"  @onclick="@(() => SetAsDone(item.id))">Done</button>
         </td>
+        <td>
+            <button class="btn"  @onclick="@(() => Remove(item.id))">X</button>
+        </td>
     </tr>     
 }
 </tbody>
@@ -44,7 +48,7 @@
 
 @code
 {
-    List<ToDoItem> items = new List<ToDoItem>();        
+    List<ToDoItem> items = new List<ToDoItem>();
     string Descriptions ="";
     string comments = "";
     protected override void OnInitialized()
@@ -53,16 +57,27 @@
     }
     public async Task SetAsDone(string id)
     {
-     
-     var itemCh = db.Items.Where(x=>x.id == id).SingleOrDefault();
+
+        var itemCh = db.Items.Where(x=>x.id == id).SingleOrDefault();
         itemCh.IsDone = true;
         itemCh.Comment = comments;
-        await db.SaveChangesAsync();   
+        await db.SaveChangesAsync();
         Descriptions = "";
-        comments = ""; 
-        StateHasChanged(); 
-        OnInitialized();      
-       
+        comments = "";
+        StateHasChanged();
+        OnInitialized();
+
+    }
+
+    public void Remove(string id)
+    {
+
+        var item = db.Items.Where(x=>x.id == id).FirstOrDefault();
+        db.Remove(item);
+        db.SaveChanges();
+        StateHasChanged();
+        OnInitialized();
+
     }
     void AddFixedItem()
     {
