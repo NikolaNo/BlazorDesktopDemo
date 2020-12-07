@@ -1,4 +1,5 @@
 ﻿@page "/"
+ 
 <head>
     <style>
         h1 {
@@ -7,13 +8,15 @@
     </style>
     
 </head>
-<title>Title</title>
-<NavLink class="nav-link btn btn-primary" href="todoitems">To Do Items</NavLink>
-<hr>
-<NavLink class="nav-link btn btn-primary" href="compleatedtasks">Completed Items</NavLink>
+<title>TODO Manager</title>
+<NavLink class="nav-link btn btn-primary" href="todoitems">TODO: Items</NavLink>
+@* <NavLink class="nav-link btn btn-primary" href="compleatedtasks">Completed Items</NavLink> *@
 <hr />
- <button class="btn btn-success" @onclick="OpenAboutWindow">Open Button Window</button> 
-
+ <button class="btn btn-success" @onclick="OpenAboutWindow" style="float:left">Open Button Window</button>| 
+ <NavLink class="btn btn-success" href="notebook">Notebook</NavLink>
+ <br>
+ <hr>
+<NotificationsDemo></NotificationsDemo>
 @code{
 
 async Task OpenAboutWindow()
@@ -45,6 +48,7 @@ async Task OpenTasks()
     var window = await Electron.WindowManager.CreateWindowAsync(options, url);
 
 }
+
 
 
 }

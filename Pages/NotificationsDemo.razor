@@ -1,15 +1,26 @@
+@page "/Notifications/{timerpara}"
 @page "/Notifications"
+@using System.Timers
 
-<h3>Notifications</h3>
-
-<button class="btn btn-success" @onclick = "ShowNotification">Show Notification</button>
+@* <h3>Notifications</h3> *@
+<p style="margin:0;"><u>Notification in {min}:</u></p>
+<input type="number" size="1" @bind="@timerSet" style="width:60px">
+<button class="btn btn-success" @onclick = "SetTimer">Start</button>
 
 @code
 {
-void ShowNotification()
+    [Parameter]
+    public string timerpara {get;set;}
+
+    public static int timerSet = 1; 
+ 
+  
+private static System.Timers.Timer aTimer;
+
+public static void ShowNotification()
 {
     var icon = $"{System.IO.Directory.GetCurrentDirectory()}/wwwroot/favicon.ico";
-    var options = new NotificationOptions("Hi from Blazor & Electron", "This is a notification from Desktop app with Blazor")
+    var options = new NotificationOptions("Hi! Timer is over.", "This is a notification from TODO: Manager.")
     {
        Icon = icon,
        OnClick = async () => { await Electron.Dialog.ShowMessageBoxAsync(new MessageBoxOptions("The notification has been clicked")
@@ -21,5 +32,19 @@ void ShowNotification()
     };
     Electron.Notification.Show(options);
 }
+   private static void SetTimer()
+   {
+        
+        aTimer = new System.Timers.Timer(timerSet * 1000);
+        // Hook up the Elapsed event for the timer. 
+        aTimer.Elapsed += OnTimedEvent;
+        aTimer.AutoReset = false;
+        aTimer.Enabled = true;
+    }
+
+    private static void OnTimedEvent(Object source, ElapsedEventArgs e)
+    {
+        ShowNotification();
+    }
 
 }

@@ -17,6 +17,8 @@ namespace BlazorDesktopDemo.Models
         [StringLength(80)]      
         public string Comment {get; set;}
 
+        public string Category {get;set;}
+
         public DateTime finishedDate {get;set;}
     }
 

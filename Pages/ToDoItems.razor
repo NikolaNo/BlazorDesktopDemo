@@ -1,33 +1,40 @@
 @page "/ToDoItems"
 @using BlazorDesktopDemo.Models;
 @inject BlazorDesktopDemo.Data.ApplicationDbContext db;
-@* @inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper *@
-<h2>ToDo Items</h2>
-<NavLink class="nav-link btn btn-primary" href="compleatedtasks" style="width:25%;" >
-    Completed Items</NavLink>
+@inject NavigationManager Navigation
+<center><h5><u>TODO: Items</u></h5></center>
+@* <NavLink class="nav-link btn btn-success" href="compleatedtasks" style="width:25%; " >
+    Completed Items</NavLink> *@
+    <button class="btn btn-success" @onclick="NavigateToCompleated">
+    Navigate to Compleated Items
+</button>
+<div style="float:right;">
+<input type="text" @bind="search"><button class="btn btn-primary" @onclick="OnInitialized">Search Cat.</button>
+</div>
 <hr>
-<p><input @bind=@Descriptions type="text">
-<button class="btn btn-success" @onclick="AddFixedItem" style="margin-left:10px">Add Item</button></p>
+<p style="margin-bottom: 0;">Add Item /Category:</p>
+<p><input @bind=@Descriptions type="text" size = "50">/<input @bind=@category type="text" size="8">
+<button class="btn btn-success" @onclick="AddFixedItem" style="margin-left:10px">Add</button></p>
 @* <p>Add Comment: <input @bind=@comments type="text"></p> *@
-<table class="table table-bordered">
+<table class="table table-striped">
 <thead>
-    <th>
-        <td>
+    <th> Date </th> 
+        <th>
             Descriptions
-        </td> 
-                <td>
+        </th> 
+                <th>
             Comment
-        </td> 
-        <td></td>
-        <td></td>
-    </th>
+        </th> 
+        <th></th>
+        <th>Cat.</th>
+    
 </thead>
 <tbody>
 @foreach (var item in items)
 { 
      <tr>
         <td>
-            @item.finishedDate
+            @item.finishedDate.ToShortDateString()
         </td>
         <td>
             @item.Description
@@ -36,10 +43,11 @@
             <p><input @bind=@comments type="text" ></p>
         </td>
         <td>
-            <button class="btn btn-primary"  @onclick="@(() => SetAsDone(item.id))">Done</button>
+            <button class="btn btn-primary"  @onclick="@(() => SetAsDone(item.id))">Done</button>|
+            <button class="btn btn-danger"  @onclick="@(() => Remove(item.id))">X</button>
         </td>
         <td>
-            <button class="btn"  @onclick="@(() => Remove(item.id))">X</button>
+            @item.Category
         </td>
     </tr>     
 }
@@ -48,12 +56,27 @@
 
 @code
 {
+    public string search = "";
+    public string msgs ="Items";
     List<ToDoItem> items = new List<ToDoItem>();
     string Descriptions ="";
     string comments = "";
+    string category ="";
     protected override void OnInitialized()
     {
+        if(search == ""){
         items = db.Items.Where(x=>x.IsDone == false).ToList();
+        }
+        else
+        {
+            items = db.Items
+            .Where(x=>x.IsDone == false && x.Category == search)
+            .ToList();
+        }
+    }
+        private void NavigateToCompleated()
+    {
+        Navigation.NavigateTo("compleatedtasks/"+msgs);
     }
     public async Task SetAsDone(string id)
     {
@@ -87,6 +110,7 @@
             Description = Descriptions,
             IsDone = false,
             Comment = comments,
+            Category = category,
             finishedDate = DateTime.Now
         };
         items.Add(item);
