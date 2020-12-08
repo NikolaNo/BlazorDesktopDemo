@@ -1,0 +1,32 @@
+@page "/newnotebook"
+@using BlazorDesktopDemo.Models
+@inject BlazorDesktopDemo.Data.ApplicationDbContext db;
+@inject NavigationManager Navigation
+
+<center><h5><u>New Notebook</u></h5></center>
+
+<button class="btn btn-primary" @onclick="@AddFixedItem">Add item</button>
+
+@code
+{
+
+     List<Notebook> notebook = new List<Notebook>();
+    void AddFixedItem()
+    {
+        var item = new Notebook
+        {
+            id = Guid.NewGuid().ToString(),
+            Note = "Opis",
+            Date = DateTime.Now,         
+            Category = "cat"
+          
+        };        
+   
+            notebook.Add(item);
+            db.Notebooks.Add(item);
+            db.SaveChanges();
+         
+    
+        StateHasChanged();
+    }
+}

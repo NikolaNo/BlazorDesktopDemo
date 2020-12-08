@@ -11,8 +11,9 @@ namespace BlazorDesktopDemo.Data
         {
 
         }
-
         public DbSet<ToDoItem> Items {get;set;}
+        public DbSet<Notebook> Notebooks { get;set;}
+        public DbSet<Calendar> Calendars {get;set;}
     }
 
 

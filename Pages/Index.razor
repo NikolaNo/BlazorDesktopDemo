@@ -1,5 +1,10 @@
 ﻿@page "/"
- 
+ @* dotnet ef migrations add cat *@
+ @* dotnet ef database update *@
+ @* electronize build /target win *@
+ @* C:\Project\BlazorDesktopDemo\bin\Desktop *@
+ @* C:\Users\nikolano\AppData\Local\Programs\blazor-desktop-demo\ *@
+ @* dotnet build *@
 <head>
     <style>
         h1 {
@@ -12,28 +17,14 @@
 <NavLink class="nav-link btn btn-primary" href="todoitems">TODO: Items</NavLink>
 @* <NavLink class="nav-link btn btn-primary" href="compleatedtasks">Completed Items</NavLink> *@
 <hr />
- <button class="btn btn-success" @onclick="OpenAboutWindow" style="float:left">Open Button Window</button>| 
+
  <NavLink class="btn btn-success" href="notebook">Notebook</NavLink>
  <br>
  <hr>
 <NotificationsDemo></NotificationsDemo>
 @code{
 
-async Task OpenAboutWindow()
-{
-    string url = $"http://localhost:{BridgeSettings.WebPort}/About";
 
-    var options = new BrowserWindowOptions
-    {
-        
-        @* Fullscreen = true, *@
-        @* AlwaysOnTop = true, *@
-
-    };
-    var mainwindow = Electron.WindowManager.BrowserWindows.First();
-
-    var window = await Electron.WindowManager.CreateWindowAsync(options, url);
-}
 async Task OpenTasks()
 {
     string url =$"http://localhost:{BridgeSettings.WebPort}/ToDoItems";

@@ -9,15 +9,16 @@
     Navigate to Compleated Items
 </button>
 <div style="float:right;">
-<input type="text" @bind="search"><button class="btn btn-primary" @onclick="OnInitialized">Search Cat.</button>
+<input type="text" @bind="search">|<button class="btn btn-primary" @onclick="OnInitialized">Search Cat.</button>
 </div>
 <hr>
 <p style="margin-bottom: 0;">Add Item /Category:</p>
 <p><input @bind=@Descriptions type="text" size = "50">/<input @bind=@category type="text" size="8">
 <button class="btn btn-success" @onclick="AddFixedItem" style="margin-left:10px">Add</button></p>
+<p style="color:red;">@authmsg</p>
 @* <p>Add Comment: <input @bind=@comments type="text"></p> *@
-<table class="table table-striped">
-<thead>
+<table class="table table-striped">  
+<thead>    
     <th> Date </th> 
         <th>
             Descriptions
@@ -53,12 +54,30 @@
 }
 </tbody>
 </table>
+<button class="btn btn-primary" @onclick="CategoryList">Get Cats</button>
+<table class="table table-striped">  
+<thead>    
+    <th> Category </th> 
+   
+</thead>
+<tbody>
+@foreach (var item in cats)
+{
+            <td>
+            @item.Category
+        </td>
+    
+}
+</tbody>
+</table>
 
 @code
 {
+    public string authmsg = "";
     public string search = "";
     public string msgs ="Items";
     List<ToDoItem> items = new List<ToDoItem>();
+    List<ToDoItem> cats = new List<ToDoItem>();
     string Descriptions ="";
     string comments = "";
     string category ="";
@@ -73,6 +92,7 @@
             .Where(x=>x.IsDone == false && x.Category == search)
             .ToList();
         }
+       
     }
         private void NavigateToCompleated()
     {
@@ -84,6 +104,7 @@
         var itemCh = db.Items.Where(x=>x.id == id).SingleOrDefault();
         itemCh.IsDone = true;
         itemCh.Comment = comments;
+        itemCh.finishedDate = DateTime.Now;
         await db.SaveChangesAsync();
         Descriptions = "";
         comments = "";
@@ -112,13 +133,39 @@
             Comment = comments,
             Category = category,
             finishedDate = DateTime.Now
-        };
-        items.Add(item);
-        db.Items.Add(item);
-        db.SaveChanges();
+        };        
+        if(item.Category !="")
+        {
+            items.Add(item);
+            db.Items.Add(item);
+            db.SaveChanges();
+            authmsg = "";
+        }
+        else
+        {
+
+            authmsg = "Category is required";
+        }        
         Descriptions = "";
         comments = "";
         StateHasChanged();
+    }
+
+    public void CategoryList()
+    {
+
+        var cat = db.Items.ToList();
+
+        var list = cat.Select(p=>p.Category).Distinct();
+
+        foreach(var item in list)
+        {
+            ToDoItem it = new ToDoItem();
+            it.Category = item;
+
+            cats.Add(it);
+        }
+
     }
 }
 

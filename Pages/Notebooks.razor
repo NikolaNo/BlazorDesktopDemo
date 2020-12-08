@@ -1,0 +1,28 @@
+@page "/notebook"
+@using BlazorDesktopDemo.Models
+@inject BlazorDesktopDemo.Data.ApplicationDbContext db;
+@inject NavigationManager Navigation
+
+<center><h5><u>Notebook</u></h5></center>
+ <button class="btn btn-success" @onclick="OpenAboutWindow" style="float:left">New Notebook</button>| 
+
+
+@code{
+async Task OpenAboutWindow()
+{
+    string url = $"http://localhost:{BridgeSettings.WebPort}/newnotebook";
+
+    var options = new BrowserWindowOptions
+    {
+        
+        @* Fullscreen = true, *@
+        @* AlwaysOnTop = true, *@
+
+    };
+    var mainwindow = Electron.WindowManager.BrowserWindows.First();
+
+    var window = await Electron.WindowManager.CreateWindowAsync(options, url);
+}
+   
+}
+
