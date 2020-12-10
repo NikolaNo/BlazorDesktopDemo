@@ -14,9 +14,22 @@
 <hr>
 <p style="margin-bottom: 0;">Add Item /Category:</p>
 <p><input @bind=@Descriptions type="text" size = "50">/<input @bind=@category type="text" size="8">
-<button class="btn btn-success" @onclick="AddFixedItem" style="margin-left:10px">Add</button></p>
+<button class="btn btn-success" @onclick="AddFixedItem" style="margin-left:10px">Add</button>
+<button class="btn btn-primary" @onclick="CategoryList">Category List</button></p>
 <p style="color:red;">@authmsg</p>
 @* <p>Add Comment: <input @bind=@comments type="text"></p> *@
+<table class="table table-striped">  
+<thead>   
+    
+</thead>
+<tbody>
+@foreach (var item in cats)
+{            
+<p style="float:left">@item.Category,</p>     
+    
+}
+</tbody>
+</table>
 <table class="table table-striped">  
 <thead>    
     <th> Date </th> 
@@ -28,7 +41,7 @@
         </th> 
         <th></th>
         <th>Cat.</th>
-    
+        <th></th>
 </thead>
 <tbody>
 @foreach (var item in items)
@@ -44,32 +57,21 @@
             <p><input @bind=@comments type="text" ></p>
         </td>
         <td>
-            <button class="btn btn-primary"  @onclick="@(() => SetAsDone(item.id))">Done</button>|
-            <button class="btn btn-danger"  @onclick="@(() => Remove(item.id))">X</button>
+            <button class="btn btn-primary"  @onclick="@(() => SetAsDone(item.id))">Done</button>           
         </td>
         <td>
             @item.Category
         </td>
+        <td> 
+            <button class="btn btn-danger"  @onclick="@(() => Remove(item.id))">X</button>
+            </td>
     </tr>     
 }
 </tbody>
 </table>
-<button class="btn btn-primary" @onclick="CategoryList">Get Cats</button>
-<table class="table table-striped">  
-<thead>    
-    <th> Category </th> 
-   
-</thead>
-<tbody>
-@foreach (var item in cats)
-{
-            <td>
-            @item.Category
-        </td>
-    
-}
-</tbody>
-</table>
+
+
+
 
 @code
 {

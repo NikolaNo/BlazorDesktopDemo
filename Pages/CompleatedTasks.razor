@@ -6,6 +6,9 @@
 <center><h5><u>Completed @strong</u></h5></center>
 
 <NavLink class="nav-link btn btn-primary" href="todoitems" style="width:35%;" > Navigate to TODO Items</NavLink>
+<div style="float:right;">
+<input type="text" @bind="search">|<button class="btn btn-primary" @onclick="OnInitialized">Search Cat.</button>
+</div>
 <hr>
 <input type="date" @bind=@date @onfocusout=@Refresh>
 <button class="btn btn-primary" @onclick=@Refresh>></button>
@@ -52,7 +55,7 @@
 {    
     [Parameter]
     public string msg {get; set;}
-
+    public string search = "";
     public string strong; 
 
     List<ToDoItem> itemsC = new List<ToDoItem>();
@@ -61,8 +64,16 @@
     
     protected override void OnInitialized()
     {        
+        if(search ==""){
         itemsC = db.Items.Where(x=>x.IsDone == true 
         && x.finishedDate.Date == date.Date).ToList();
+        }
+        else{
+        itemsC = db.Items.Where(x=>x.IsDone == true 
+        && x.Category == search)
+        .OrderByDescending(x=>x.finishedDate)
+        .ToList();
+        }
         strong = msg ?? "Items";
     }
     public void Refresh()

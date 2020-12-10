@@ -5,6 +5,7 @@
 
 html, body {
     font-family: 'Montserrat', Helvetica, Arial, sans-serif;
+    font-size: 0.9rem;
 }
 
 a, .btn-link {
@@ -153,7 +154,7 @@ app {
     }
 }
 
-@media (min-width: 828px) {
+@media (min-width: 1930px) {
     app {
         flex-direction: row;
     }
@@ -184,4 +185,13 @@ app {
         display: block;
     }
 }
+/* @media (min-width: 1830px) {
+    .sidebar {
+        width: 250px;
+        height: 100vh;
+        position: sticky;
+        top: 0;
+    }
+
+} */
 
