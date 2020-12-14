@@ -1,7 +1,7 @@
-@page "/calendar"
 @using BlazorDesktopDemo.Models;
 @inject BlazorDesktopDemo.Data.ApplicationDbContext db;
 @inject NavigationManager Navigation
+
 <p style="font-weight: bold;"><u>Callendar:</u></p>
 <input type="date" @bind=@date @onfocusout=@Refresh>
 <input type="text" @bind="@DescriptionText" style="width: 150px;">
@@ -34,6 +34,12 @@
         <td>
             @item.Category
         </td>
+        @if(@item.Category != "Callendar")
+        {
+        <td>
+            <button class="btn btn-primary"  @onclick="@(() => SetAsDone(item.id))">Done</button>           
+        </td>
+        }
         <td>
             <button class="btn btn-danger" title="Remove from Callendar"  @onclick="@(() => Remove(item.id))">X</button>
         </td> 
@@ -43,7 +49,7 @@
 </tbody>
 </table>
 @code{
-
+  
     public string authmsg = "";
     public string select = "";
     public string DescriptionText = "";
@@ -55,7 +61,7 @@
     {        
         todo = db.Items.Where(x=>x.finishedDate.Date.DayOfYear == date.Date.DayOfYear
         &&x.Category == "Callendar"||x.Category=="Note"&&x.IsDone == false).ToList();
-        
+      
     }
     public void Refresh()
     {
@@ -96,5 +102,18 @@
         
         StateHasChanged();
       
+    }
+        public async Task SetAsDone(string id)
+    {
+
+        var itemCh = db.Items.Where(x=>x.id == id).SingleOrDefault();
+        itemCh.IsDone = true;
+     
+        itemCh.finishedDate = DateTime.Now;
+        await db.SaveChangesAsync();
+
+        StateHasChanged();
+        OnInitialized();
+
     }
 }
