@@ -1,26 +1,40 @@
 @page "/Notifications/{timerpara}"
 @page "/Notifications"
 @using System.Timers
+@inject NavigationManager Navigation
 
 @* <h3>Notifications</h3> *@
-<p style="margin:0;"><u>Notification in {min}:</u></p>
-<input type="number" size="1" @bind="@timerSet" style="width:60px">
-<button class="btn btn-success" @onclick = "SetTimer">Start</button>
+<p style="margin:0;"><u>Notification in {min}{sec}/{msg}:</u></p>
+<input type="number" size="1" @bind="@timerSetMin" style="width:60px">
+<input type="number" size="1" @bind="@timerSetSec" style="width:60px">/
+<input type ="text" @bind="@timerMsg" style="width:120px">
+<button class="btn btn-success" @onclick = "SetTimer">Start</button><p><u>@time</u></p>
 
 @code
 {
     [Parameter]
     public string timerpara {get;set;}
 
-    public static int timerSet = 1; 
+    public static int timerSetMin = 0;
+
+    public static int timerSetSec = 1; 
+
+    public static string time = "";
+
+    public static string timerMsg = "";
  
   
 private static System.Timers.Timer aTimer;
 
 public static void ShowNotification()
 {
+    if(timerMsg == "")
+    {
+        timerMsg = "This is a notification from TODO: Manager.";
+    }
+ 
     var icon = $"{System.IO.Directory.GetCurrentDirectory()}/wwwroot/favicon.ico";
-    var options = new NotificationOptions("Hi! Timer is over.", "This is a notification from TODO: Manager.")
+    var options = new NotificationOptions("Hi! Timer is over.", timerMsg)
     {
        Icon = icon,
        OnClick = async () => { await Electron.Dialog.ShowMessageBoxAsync(new MessageBoxOptions("The notification has been clicked")
@@ -34,8 +48,8 @@ public static void ShowNotification()
 }
    private static void SetTimer()
    {
-        
-        aTimer = new System.Timers.Timer(timerSet * 1000);
+        time ="End: " + DateTime.Now.AddSeconds(timerSetSec).AddMinutes(timerSetMin).ToLongTimeString();
+        aTimer = new System.Timers.Timer((timerSetSec * 1000)+(timerSetMin*60000));
         // Hook up the Elapsed event for the timer. 
         aTimer.Elapsed += OnTimedEvent;
         aTimer.AutoReset = false;
@@ -44,7 +58,11 @@ public static void ShowNotification()
 
     private static void OnTimedEvent(Object source, ElapsedEventArgs e)
     {
-        ShowNotification();
+        ShowNotification(); 
+        time = "";            
+        timerMsg="";
     }
+
+
 
 }

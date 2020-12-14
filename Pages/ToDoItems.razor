@@ -9,13 +9,23 @@
     Navigate to Compleated Items
 </button>
 <div style="float:right;">
-<input type="text" @bind="search">|<button class="btn btn-primary" @onclick="OnInitialized">Search Cat.</button>
+
+@* <button class="btn btn-primary" @onclick="@OnInitialized">></button> *@
+<input type="text" @bind="search">|
+    <select @bind="@select">
+    <option value="Asc">Asc</option>
+    <option value="Desc">Desc</option>
+</select>
+<button class="btn btn-primary" @onclick="OnInitialized">Search Cat.</button>
 </div>
+
 <hr>
 <p style="margin-bottom: 0;">Add Item /Category:</p>
 <p><input @bind=@Descriptions type="text" size = "50">/<input @bind=@category type="text" size="8">
 <button class="btn btn-success" @onclick="AddFixedItem" style="margin-left:10px">Add</button>
-<button class="btn btn-primary" @onclick="CategoryList">Category List</button></p>
+<button class="btn btn-primary" @onclick="CategoryList">Category List</button>
+
+</p>
 <p style="color:red;">@authmsg</p>
 @* <p>Add Comment: <input @bind=@comments type="text"></p> *@
 <table class="table table-striped">  
@@ -46,6 +56,8 @@
 <tbody>
 @foreach (var item in items)
 { 
+    if(item.Category != "Callendar" && item.Category != "Note")
+    {
      <tr>
         <td>
             @item.finishedDate.ToShortDateString()
@@ -65,16 +77,15 @@
         <td> 
             <button class="btn btn-danger"  @onclick="@(() => Remove(item.id))">X</button>
             </td>
-    </tr>     
+    </tr>  
+    }   
 }
 </tbody>
 </table>
 
-
-
-
 @code
 {
+    public string select ="";
     public string authmsg = "";
     public string search = "";
     public string msgs ="Items";
@@ -85,6 +96,21 @@
     string category ="";
     protected override void OnInitialized()
     {
+
+        if(select == "Desc")
+        {
+        if(search == ""){
+        items = db.Items.Where(x=>x.IsDone == false).OrderByDescending(x=>x.finishedDate).ToList();
+        }
+        else
+        {
+            items = db.Items
+            .Where(x=>x.IsDone == false && x.Category == search)
+            .ToList();
+        }
+        }
+        else
+        {
         if(search == ""){
         items = db.Items.Where(x=>x.IsDone == false).ToList();
         }
@@ -93,6 +119,8 @@
             items = db.Items
             .Where(x=>x.IsDone == false && x.Category == search)
             .ToList();
+        }
+
         }
        
     }

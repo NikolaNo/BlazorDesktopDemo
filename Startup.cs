@@ -67,14 +67,14 @@ namespace BlazorDesktopDemo
                 endpoints.MapFallbackToPage("/_Host");
             });
             Task.Run(async () => await Electron.WindowManager.CreateWindowAsync(new BrowserWindowOptions
-                {
-                    Width = 800,
-                    Height = 640,                   
+            {
+                Width = 840,
+                Height = 640,
 
-                }));
-            // if(HybridSupport.IsElectronActive)
+            }));
+            // if (HybridSupport.IsElectronActive)
             // {
-            // ElcatronBootstrap();
+            //     ElcatronBootstrap();
             // }
         }
         void ElcatronBootstrap()

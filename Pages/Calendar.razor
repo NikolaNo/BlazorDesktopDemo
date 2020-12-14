@@ -1,0 +1,100 @@
+@page "/calendar"
+@using BlazorDesktopDemo.Models;
+@inject BlazorDesktopDemo.Data.ApplicationDbContext db;
+@inject NavigationManager Navigation
+<p style="font-weight: bold;"><u>Callendar:</u></p>
+<input type="date" @bind=@date @onfocusout=@Refresh>
+<input type="text" @bind="@DescriptionText" style="width: 150px;">
+<select @bind="@select">
+    <option value="Callendar">Callendar</option>
+    <option value="Note">Note</option>
+</select>
+<button class="btn btn-primary" @onclick="AddFixedItem">Add</button>
+<p style="color:red;">@authmsg</p>
+<table class="table table-bordered">
+<thead>
+    <th>Date</th>
+    <th>     
+     Event
+    </th>
+    <th>
+        Type
+    </th>
+</thead>
+<tbody>
+@foreach (var item in todo)
+{    
+    <tr>
+        <td>
+            @item.finishedDate.ToShortDateString()
+        </td>
+        <td>
+            @item.Description
+        </td>
+        <td>
+            @item.Category
+        </td>
+        <td>
+            <button class="btn btn-danger" title="Remove from Callendar"  @onclick="@(() => Remove(item.id))">X</button>
+        </td> 
+    </tr>     
+
+}
+</tbody>
+</table>
+@code{
+
+    public string authmsg = "";
+    public string select = "";
+    public string DescriptionText = "";
+    DateTime date = DateTime.Now;   
+
+    List<ToDoItem> todo = new List<ToDoItem>();
+    
+    protected override void OnInitialized()
+    {        
+        todo = db.Items.Where(x=>x.finishedDate.Date.DayOfYear == date.Date.DayOfYear
+        &&x.Category == "Callendar"||x.Category=="Note"&&x.IsDone == false).ToList();
+        
+    }
+    public void Refresh()
+    {
+           OnInitialized();
+    }
+    public void Remove(string id)
+    {
+        var item = db.Items.Where(x=>x.id == id).FirstOrDefault();
+        db.Remove(item);
+        db.SaveChanges();
+        StateHasChanged();
+        OnInitialized();
+    }
+
+    void AddFixedItem()
+    {
+        var item = new ToDoItem
+        {
+            id = Guid.NewGuid().ToString(),
+            Description = DescriptionText,
+            IsDone = false,
+            Comment = "",
+            Category = select,
+            finishedDate = date
+        };        
+        if(item.Category !="")
+        {
+            todo.Add(item);
+            db.Items.Add(item);
+            db.SaveChanges();
+            authmsg = "";
+        }
+        else
+        {
+
+            authmsg = "Category is required";
+        }    
+        
+        StateHasChanged();
+      
+    }
+}
