@@ -7,6 +7,18 @@
 
 <p>This component demonstrates fetching data from a service.</p>
 
+<label>Sort: </label>
+
+<select @bind="SelectedSort">
+    <option value="new">Newest first</option>
+    <option value="old">Oldest first</option>
+    <option value="high">Hightest temperature first</option>
+    <option value="low">Lowest temperature first</option>
+
+
+</select>
+
+
 @if (forecasts == null)
 {
     <p><em>Loading...</em></p>
@@ -37,10 +49,33 @@ else
 }
 
 @code {
+
+    private string selectedSort;
+
+    public string SelectedSort
+    {
+        get { return selectedSort; }
+        set
+        {
+            selectedSort = value;
+            selectedSortDictionary[selectedSort]();
+        }
+    }
+
+    Dictionary<string, Action> selectedSortDictionary;
     private WeatherForecast[] forecasts;
 
     protected override async Task OnInitializedAsync()
     {
         forecasts = await ForecastService.GetForecastAsync(DateTime.Now);
+
+        selectedSortDictionary = new Dictionary<string, Action>
+        {
+            ["old"] = () => forecasts = forecasts.OrderByDescending(x => x.Date).ToArray(),
+            ["new"] = () => forecasts = forecasts.OrderBy(x => x.Date).ToArray(),
+            ["high"] = () => forecasts = forecasts.OrderByDescending(x => x.TemperatureC).ToArray(),
+            ["low"] = () => forecasts = forecasts.OrderBy(x => x.TemperatureC).ToArray(),
+
+        };
     }
 }

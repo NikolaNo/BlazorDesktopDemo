@@ -1,0 +1,24 @@
+﻿@page "/backgroundservice"
+
+<p style="background-color:@style">BackgroundService : @time</p>
+
+
+
+@code {
+
+    string time;
+    string style = "blue;";
+
+    protected override void OnInitialized()
+    {
+        TimerService.UpdateEvent += async date =>
+        {
+            await InvokeAsync(() => {
+                time = date.ToLongTimeString();
+                style = style == "blue;" ? "red;" : "blue;";
+                StateHasChanged();
+            });
+        };
+    }
+
+}
